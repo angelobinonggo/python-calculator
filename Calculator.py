@@ -1,21 +1,21 @@
 import tkinter as tk
 
+# Font and colors
 FONT = ('Poppins', 18)
-BG_COLOR = "#e3f2fd"
+BG_COLOR = "#e3f2fd"  # Light blue
 ENTRY_COLOR = "#bbdefb"
-
-# Neutral colors for buttons
-neutral_colors = [
-    ['#d3d3d3', '#e0e0e0', '#f5f5f5', '#c0c0c0'],
-    ['#f0f0f0', '#dcdcdc', '#f8f8ff', '#b0b0b0'],
-    ['#fafafa', '#e8e8e8', '#fdfdfd', '#a9a9a9'],
-    ['#fefefe', '#eeeeee', '#ffffff', '#808080']
-]
+BTN_COLOR = "#90caf9"
+BTN_TEXT_COLOR = "#0d47a1"
+BTN_ACTIVE_COLOR = "#64b5f6"
+CLR_BTN_COLOR = "#42a5f5"
+CLR_BTN_ACTIVE = "#1e88e5"
 
 # Create main window
 root = tk.Tk()
-root.title("Neutral Calculator")
+root.title("Blue Calculator")
 root.configure(bg=BG_COLOR)
+
+# Set window size and make it non-resizable
 root.geometry("360x520")
 root.resizable(False, False)
 
@@ -39,7 +39,7 @@ def calculate():
         entry.delete(0, tk.END)
         entry.insert(tk.END, "Error")
 
-# Button labels
+# Button layout
 buttons = [
     ['7', '8', '9', '/'],
     ['4', '5', '6', '*'],
@@ -47,25 +47,27 @@ buttons = [
     ['0', '.', '=', '+']
 ]
 
-# Create grid buttons with neutral colors
+# Create buttons using grid
 for i, row in enumerate(buttons):
     for j, char in enumerate(row):
         action = calculate if char == '=' else lambda ch=char: click(ch)
         tk.Button(
-            root, text=char, font=FONT, bg=neutral_colors[i][j], fg="#000000",
-            activebackground="#bdbdbd", relief="flat", width=5, height=2,
+            root, text=char, font=FONT, bg=BTN_COLOR, fg=BTN_TEXT_COLOR,
+            activebackground=BTN_ACTIVE_COLOR, relief="flat", width=5, height=2,
             command=action
         ).grid(row=i+1, column=j, padx=5, pady=5, sticky="nsew")
 
-# Clear button (bottom full-width)
+# Clear button (spanning all columns)
 tk.Button(
-    root, text='Clear', font=FONT, bg="#bdbdbd", fg="black",
-    activebackground="#9e9e9e", relief="flat", height=2,
+    root, text='Clear', font=FONT, bg=CLR_BTN_COLOR, fg="white",
+    activebackground=CLR_BTN_ACTIVE, relief="flat", height=2,
     command=clear
 ).grid(row=5, column=0, columnspan=4, padx=20, pady=10, sticky="nsew")
 
-# Make grid responsive
-for i in range(6): root.grid_rowconfigure(i, weight=1)
-for j in range(4): root.grid_columnconfigure(j, weight=1)
+# Configure grid weights to ensure resizing behavior
+for i in range(6):  # 0–5 rows
+    root.grid_rowconfigure(i, weight=1)
+for j in range(4):  # 0–3 columns
+    root.grid_columnconfigure(j, weight=1)
 
 root.mainloop()
