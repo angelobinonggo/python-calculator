@@ -1,8 +1,14 @@
 import tkinter as tk
 
 FONT = ('Poppins', 18)
-BG_COLOR = "#e3f2fd"
-ENTRY_COLOR = "#bbdefb"
+ENTRY_COLOR_LIGHT = "#bbdefb"
+ENTRY_COLOR_DARK = "#333333"
+BG_COLOR_LIGHT = "#e3f2fd"
+BG_COLOR_DARK = "#121212"
+BUTTON_COLOR_LIGHT = '#c0c0c0'
+BUTTON_COLOR_DARK = '#444444'
+BUTTON_TEXT_COLOR_LIGHT = 'black'
+BUTTON_TEXT_COLOR_DARK = 'white'
 
 # Neutral colors for buttons
 neutral_colors = [
@@ -14,13 +20,15 @@ neutral_colors = [
 
 # Create main window
 root = tk.Tk()
-root.title("Neutral Calculator")
-root.configure(bg=BG_COLOR)
+root.title("Calculator")
 root.geometry("360x520")
 root.resizable(False, False)
 
+# Initial theme set to light mode
+current_theme = 'light'
+
 # Entry field
-entry = tk.Entry(root, font=FONT, bd=0, bg=ENTRY_COLOR, justify="right", relief="flat")
+entry = tk.Entry(root, font=FONT, bd=0, bg=ENTRY_COLOR_LIGHT, justify="right", relief="flat")
 entry.grid(row=0, column=0, columnspan=4, padx=20, pady=20, ipady=20, sticky="nsew")
 
 # Button functions
@@ -39,6 +47,29 @@ def calculate():
         entry.delete(0, tk.END)
         entry.insert(tk.END, "Error")
 
+def toggle_theme():
+    global current_theme
+
+    if current_theme == 'light':
+        current_theme = 'dark'
+        root.configure(bg=BG_COLOR_DARK)
+        entry.configure(bg=ENTRY_COLOR_DARK, fg=BUTTON_TEXT_COLOR_DARK)
+        toggle_button.configure(bg=BUTTON_COLOR_DARK, fg=BUTTON_TEXT_COLOR_DARK)
+
+        for i, row in enumerate(buttons):
+            for j, char in enumerate(row):
+                buttons[i][j].configure(bg=BUTTON_COLOR_DARK, fg=BUTTON_TEXT_COLOR_DARK)
+
+    else:
+        current_theme = 'light'
+        root.configure(bg=BG_COLOR_LIGHT)
+        entry.configure(bg=ENTRY_COLOR_LIGHT, fg=BUTTON_TEXT_COLOR_LIGHT)
+        toggle_button.configure(bg=BUTTON_COLOR_LIGHT, fg=BUTTON_TEXT_COLOR_LIGHT)
+
+        for i, row in enumerate(buttons):
+            for j, char in enumerate(row):
+                buttons[i][j].configure(bg=neutral_colors[i][j], fg=BUTTON_TEXT_COLOR_LIGHT)
+
 # Button labels
 buttons = [
     ['7', '8', '9', '/'],
@@ -48,14 +79,19 @@ buttons = [
 ]
 
 # Create grid buttons with neutral colors
+button_widgets = []
 for i, row in enumerate(buttons):
+    button_row = []
     for j, char in enumerate(row):
         action = calculate if char == '=' else lambda ch=char: click(ch)
-        tk.Button(
+        btn = tk.Button(
             root, text=char, font=FONT, bg=neutral_colors[i][j], fg="#000000",
             activebackground="#bdbdbd", relief="flat", width=5, height=2,
             command=action
-        ).grid(row=i+1, column=j, padx=5, pady=5, sticky="nsew")
+        )
+        btn.grid(row=i+1, column=j, padx=5, pady=5, sticky="nsew")
+        button_row.append(btn)
+    button_widgets.append(button_row)
 
 # Clear button (bottom full-width)
 tk.Button(
@@ -63,6 +99,13 @@ tk.Button(
     activebackground="#9e9e9e", relief="flat", height=2,
     command=clear
 ).grid(row=5, column=0, columnspan=4, padx=20, pady=10, sticky="nsew")
+
+# Dark mode toggle button
+toggle_button = tk.Button(
+    root, text="Toggle Dark Mode", font=FONT, bg=BUTTON_COLOR_LIGHT, fg=BUTTON_TEXT_COLOR_LIGHT,
+    activebackground="#9e9e9e", relief="flat", height=2, command=toggle_theme
+)
+toggle_button.grid(row=6, column=0, columnspan=4, padx=20, pady=10, sticky="nsew")
 
 # Make grid responsive
 for i in range(6): root.grid_rowconfigure(i, weight=1)
