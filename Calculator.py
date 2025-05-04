@@ -1,4 +1,4 @@
-import tkinter as tk
+import tkinter as tk #Youcandothis!
 
 FONT = ('Poppins', 18)
 ENTRY_COLOR_LIGHT = "#bbdefb"
